@@ -1,0 +1,49 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: arc-sparks2
+  namespace: flux-system
+spec:
+  interval: 10s
+  url: https://github.com/danielsollondon/arc-sparks2
+  ref:
+    branch: main
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha1
+kind: Terraform
+metadata:
+  name: eks01
+  namespace: flux-system
+spec:
+  interval: 30s
+  approvePlan: "auto"
+  disableDriftDetection: true
+  path: ./eks01
+  sourceRef:
+    kind: GitRepository
+    name: arc-sparks2
+    namespace: flux-system
+  varsFrom:
+  - kind: Secret
+    name: aws-credentials
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha1
+kind: Terraform
+metadata:
+  name: eks02
+  namespace: flux-system
+spec:
+  interval: 30s
+  approvePlan: "auto"
+  disableDriftDetection: true
+  path: ./eks02
+  sourceRef:
+    kind: GitRepository
+    name: arc-sparks2
+    namespace: flux-system
+  varsFrom:
+  - kind: Secret
+    name: aws-credentials
+
+
+
